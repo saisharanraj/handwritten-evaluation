@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Handwritten Answer Evaluator</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>📝 Handwritten Answer Evaluator</h1>
+    <p>Upload a scanned **answer sheet** (PDF or image) and get AI-powered evaluation of the answers.</p>
+
+    <div class="upload-section">
+      <input type="file" id="file-upload" accept=".pdf, .png, .jpg, .jpeg" />
+      <button onclick="submitFile()">Upload and Evaluate</button>
+    </div>
+
+    <div class="question-section">
+      <label for="question">Enter the Question:</label>
+      <input type="text" id="question" placeholder="Type the question here" />
+    </div>
+
+    <div id="evaluation-result">
+      <h2>Evaluation Results:</h2>
+      <p id="feedback-text">Your evaluation will appear here.</p>
+    </div>
+  </div>
+
+  <script>
+    function submitFile() {
+      const fileInput = document.getElementById('file-upload');
+      const questionInput = document.getElementById('question');
+      const feedbackText = document.getElementById('feedback-text');
+
+      const file = fileInput.files[0];
+      const question = questionInput.value;
+
+      if (!file) {
+        alert("Please upload a file!");
+        return;
+      }
+      if (!question) {
+        alert("Please enter the question!");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("question", question);
+
+      // Send the form data to the backend
+      axios.post("YOUR_BACKEND_API_URL", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        const evaluation = response.data.evaluation; // Assume backend sends an evaluation
+        feedbackText.textContent = evaluation;
+      })
+      .catch((error) => {
+        console.error("There was an error!", error);
+        feedbackText.textContent = "An error occurred while processing your request.";
+      });
+    }
+  </script>
+</body>
+</html>
